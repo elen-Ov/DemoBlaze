@@ -494,4 +494,7 @@ allure-report/
 Logs/  # Если не хотите коммитить логи
 *.log  # Или конкретные расширения
 
+# Креды, url
+appsettings.json
+
 # End of https://www.toptal.com/developers/gitignore/api/rider,csharp

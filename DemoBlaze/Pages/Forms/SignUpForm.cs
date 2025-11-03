@@ -12,12 +12,12 @@ public class SignUpForm
     
     public InputElement SignUpFieldUsernameInput => new InputElement(_signUpFieldUsernameLocator);
     public InputElement SignUpFieldPasswordInput => new InputElement(_signUpPasswordFieldLocator);
-    public InputElement SignUpButtonConfirmation => new InputElement(_signUpButtonLocator);
+    public ButtonElement SignUpButtonConfirmation => new ButtonElement(_signUpButtonLocator);
     
     public void SignUpUser(User user)
     {
         SignUpFieldUsernameInput.SetUpText(user.Username);
         SignUpFieldPasswordInput.SetUpText(user.Password);
-        SignUpButtonConfirmation.ClickElement();
+        SignUpButtonConfirmation.ClickIfDisplayed();
     }
 }

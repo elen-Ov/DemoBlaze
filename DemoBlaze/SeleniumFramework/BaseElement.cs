@@ -36,4 +36,13 @@ public class BaseElement
         Element.Clear();
         Element.SendKeys(text);
     }
+    
+    public string GetText()
+    {
+        return Wait.Until(driver =>
+        {
+            string text = driver.FindElement(Locator).Text;
+            return !string.IsNullOrEmpty(text) ? text : null;
+        });
+    }
 }

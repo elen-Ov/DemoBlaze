@@ -18,7 +18,7 @@ public class LogInForm
     {
         LoginFieldUsernameInput.SetUpText(user.Username);
         LoginFieldPasswordInput.SetUpText(user.Password);
-        LoginButton.ClickElement();
+        LoginButton.ClickIfDisplayed();
         return this;
     }
 }
