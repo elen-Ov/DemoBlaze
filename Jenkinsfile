@@ -1,10 +1,8 @@
 pipeline {
     agent any
-
     parameters {
         string(name: 'TEST_TAG', defaultValue: 'QA', description: 'Run tests with tag')
     }
-
     stages {
         stage('Check PATH') {
             steps {
@@ -28,9 +26,12 @@ pipeline {
 
         stage('Load Config') {
             steps {
-                script {
-                    withCredentials([file(credentialsId: 'appsettings-json', variable: 'CONFIG_FILE')]) {
-                        sh "cp '${CONFIG_FILE}' '${WORKSPACE}/DemoBlaze/appsettings.json'"
+                withCredentials([file(credentialsId: 'appsettings-json', variable: 'CONFIG_FILE')]) {
+                    script {
+                        def destination = "${WORKSPACE}/DemoBlaze/appsettings.json"
+                        sh "cp '${CONFIG_FILE}' '${destination}'"
+                        
+                        sh "test -f '${destination}' && echo 'Config file copied successfully' || echo 'Config file not found'"
                     }
                 }
             }
