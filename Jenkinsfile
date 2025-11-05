@@ -29,9 +29,18 @@ pipeline {
                 withCredentials([file(credentialsId: 'appsettings-json', variable: 'CONFIG_FILE')]) {
                     script {
                         def destination = "${WORKSPACE}/DemoBlaze/appsettings.json"
-                        sh "cp '${CONFIG_FILE}' '${destination}'"
+                        sh '''
+                            cp "$CONFIG_FILE" "''' + destination + '''"
+                        '''
                         
-                        sh "test -f '${destination}' && echo 'Config file copied successfully' || echo 'Config file not found'"
+                        sh '''
+                            if [ -f "''' + destination + '''" ]; then
+                                echo "Config file copied successfully"
+                            else
+                                echo "Config file not found"
+                                exit 1
+                            fi
+                        '''
                     }
                 }
             }
