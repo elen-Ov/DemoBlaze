@@ -1,5 +1,4 @@
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 
 namespace DemoBlaze.SeleniumFramework;
 
@@ -18,10 +17,4 @@ public class ButtonElement : BaseElement
             throw new Exception("Button is not clickable");
         }
     }
-    
-    public void WaitUntilClickable(int timeoutSeconds = 30)
-    {
-        var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(timeoutSeconds));
-        wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Locator));
-    } 
 }

@@ -7,12 +7,13 @@ public class BaseElement
 {
     protected readonly IWebDriver Driver = Utils.BrowserUtils.Driver;
     protected readonly By Locator;
-    protected readonly WebDriverWait Wait;
+    private readonly WebDriverWait Wait;
     
     public BaseElement(int timeOutSeconds = 10)
     {
         Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(timeOutSeconds));
     }
+    
     public BaseElement(By locator, int timeOutSeconds = 10)
     {
         Locator = locator;

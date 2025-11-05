@@ -3,23 +3,32 @@ using DemoBlaze.Pages;
 using DemoBlaze.SeleniumFramework;
 using DemoBlaze.Services;
 using DemoBlaze.Utils;
+using Allure.NUnit.Attributes;
+using MyAllure = Allure.NUnit;
 
 namespace DemoBlaze.Tests;
 
+[MyAllure.AllureNUnit]
+
 public class SignUpTests : BaseTest
 {
-    private readonly ProductStoreMainPage _mainPage = new ProductStoreMainPage();
     private readonly UserService _userService = new UserService();
     private readonly AlertElement _loginAlert = new AlertElement();
 
     [Test]
-    public void Register_ValidUser_Success()
+    [Category("Sign up tests")]
+    [Category("QA")]
+    [AllureTag("regression")]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Register with valid credentials")]
+    public void SignUp_RegisterWithValidData_Success()
     {
         // Arrange
-        var user = new User("user_test_113", "testpassword_113");
+        var user = StringUtils.GenerateUserNameAndPassword(6);
+        var userData = new User(user.Name, user.Password);
 
         // Act
-        _userService.Register(user);
+        _userService.Register(userData);
         _loginAlert.IsAlertPresent();
         var alertMessage = _loginAlert.GetAlertText();
         _loginAlert.AlertAccept();
@@ -30,7 +39,12 @@ public class SignUpTests : BaseTest
     }
     
     [Test]
-    public void Register_AlreadyRegisteredUser_Failure()
+    [Category("Sign up tests")]
+    [Category("QA")]
+    [AllureTag("regression")]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Register with valid credentials twice")]
+    public void SignUp_RegisterByAlreadyRegisteredData_ErrorMessage()
     {
         // Arrange
         var user = new User(Config.Username, Config.Password);

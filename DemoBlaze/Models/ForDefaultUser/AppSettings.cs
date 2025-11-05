@@ -1,5 +1,3 @@
-using DemoBlaze.Utils;
-
 namespace DemoBlaze.Models.ForDefaultUser;
 
 public class AppSettings

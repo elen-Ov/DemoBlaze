@@ -33,19 +33,7 @@ public class AlertElement : BaseElement
         else
         {
             throw new Exception("Alert not present");
-        } 
-    }
-
-    public void AlertDismiss()
-    {
-        if (IsAlertPresent())
-        {
-            Driver.SwitchTo().Alert().Dismiss();
         }
-        else
-        {
-            throw new Exception("Alert not present");
-        } 
     }
 
     public string? GetAlertText()

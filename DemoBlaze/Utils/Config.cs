@@ -15,8 +15,6 @@ public static class Config
         var configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
         if (!File.Exists(configFilePath))
             throw new FileNotFoundException("Config file not found", configFilePath);
-
-        // Чтение и десериализация JSON
         var json = File.ReadAllText(configFilePath);
         var settings = JsonConvert.DeserializeObject<AppSettings>(json);
 
