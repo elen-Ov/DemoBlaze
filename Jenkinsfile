@@ -25,18 +25,17 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'appsettings-json', variable: 'CONFIG_FILE')]) {
                     script {
-                        def destination = "${WORKSPACE}/DemoBlaze/appsettings.json"
-                        sh '''
-                            cp "$CONFIG_FILE" "''' + destination + '''"
-                        '''
-                        sh '''
-                            if [ -f "''' + destination + '''" ]; then
-                                echo "Config file copied successfully"
-                            else
-                                echo "Config file not found"
-                                exit 1
-                            fi
-                        '''
+                        sh """
+                        cp "\$CONFIG_FILE" "${WORKSPACE}/DemoBlaze/appsettings.json"
+                        """
+                        sh """
+                        if [ -f "${WORKSPACE}/DemoBlaze/appsettings.json" ]; then
+                            echo "Config file copied successfully"
+                        else
+                            echo "Config file not found"
+                            exit 1
+                        fi
+                        """
                     }
                 }
             }
@@ -57,8 +56,8 @@ pipeline {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                         sh """
                         export PATH=\$PATH:/usr/local/share/dotnet:/opt/homebrew/bin
-                        mkdir -p TestResults
-                        dotnet test --filter "Category=${params.TEST_TAG}" --logger "trx;LogFileName=TestResults/test-results.trx"
+                        mkdir -p "${WORKSPACE}/TestResults"
+                        dotnet test --filter "Category=${params.TEST_TAG}" --logger "trx;LogFileName=${WORKSPACE}/TestResults/test-results.trx"
                         """
                     }
                 }
@@ -68,18 +67,19 @@ pipeline {
     post {
         always {
             script {
-                if (fileExists('TestResults')) {
+                def testResultsDir = "${WORKSPACE}/TestResults"
+                if (fileExists(testResultsDir)) {
+                    echo "TestResults found! Generating Allure report..."
                     sh """
-                    export PATH=$PATH:/opt/homebrew/bin
-                    mkdir -p allure-report
-                    allure generate TestResults --output allure-report --clean
+                    export PATH=\$PATH:/opt/homebrew/bin
+                    allure generate "${testResultsDir}" --output "${WORKSPACE}/allure-report" --clean
                     """
                     archiveArtifacts artifacts: 'TestResults/*.trx, allure-report/**', allowEmptyArchive: true
+                    allure includeProperties: false, jdk: '', results: [[path: 'allure-report']]
                 } else {
                     echo "Warning: TestResults directory not found!"
                 }
             }
-            sh 'echo "Post finished"'
         }
         success {
             echo 'SUCCESS!!!'
