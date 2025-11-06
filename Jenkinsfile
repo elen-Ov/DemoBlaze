@@ -71,11 +71,20 @@ pipeline {
                 if (fileExists(testResultsDir)) {
                     echo "TestResults found! Generating Allure report..."
                     sh """
-                    export PATH=\$PATH:/opt/homebrew/bin
+                    # Явно добавляем /opt/homebrew/bin в PATH (если глобальная настройка не сработала)
+                    export PATH="/opt/homebrew/bin:\$PATH"
+                    # Проверяем, что allure доступен
+                    which allure
+                    allure --version
+                    # Генерируем отчёт
                     allure generate "${testResultsDir}" --output "${WORKSPACE}/allure-report" --clean
                     """
                     archiveArtifacts artifacts: 'TestResults/*.trx, allure-report/**', allowEmptyArchive: true
-                    allure includeProperties: false, jdk: '', results: [[path: 'allure-report']]
+                    # Указываем явное имя Allure (должно совпадать с Global Tools)
+                    allure commandline: 'Allure', 
+                           includeProperties: false, 
+                           jdk: '', 
+                           results: [[path: 'allure-report']]
                 } else {
                     echo "Warning: TestResults directory not found!"
                 }
