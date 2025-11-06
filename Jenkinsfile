@@ -56,8 +56,10 @@ pipeline {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                         sh """
                         export PATH=\$PATH:/usr/local/share/dotnet:/opt/homebrew/bin
-                        mkdir -p "${WORKSPACE}/TestResults"
-                        dotnet test --filter "Category=${params.TEST_TAG}" --logger "trx;LogFileName=${WORKSPACE}/TestResults/test-results.trx"
+                        mkdir -p "${WORKSPACE}/Jefit_test/bin/Debug/net8.0/allure-results"
+                        dotnet test --filter "Category=${params.TEST_TAG}" \
+                            --logger "trx;LogFileName=${WORKSPACE}/TestResults/test-results.trx" \
+                            --logger "allure;LogFilePath=${WORKSPACE}/Jefit_test/bin/Debug/net8.0/allure-results"
                         """
                     }
                 }
@@ -67,25 +69,21 @@ pipeline {
     post {
         always {
             script {
-                def testResultsDir = "${WORKSPACE}/TestResults"
-                if (fileExists(testResultsDir)) {
-                    echo "TestResults found! Generating Allure report..."
+                def allureResultsDir = "${WORKSPACE}/Jefit_test/bin/Debug/net8.0/allure-results"
+                if (fileExists(allureResultsDir)) {
+                    echo "Allure results found! Generating report..."
                     sh """
-                    # Явно добавляем /opt/homebrew/bin в PATH (если глобальная настройка не сработала)
                     export PATH="/opt/homebrew/bin:\$PATH"
-                    # Проверяем, что allure доступен
                     which allure
                     allure --version
-                    # Генерируем отчёт
-                    allure generate "${testResultsDir}" --output "${WORKSPACE}/allure-report" --clean
+                    allure generate "${allureResultsDir}" --output "${WORKSPACE}/allure-report" --clean
                     """
                     archiveArtifacts artifacts: 'TestResults/*.trx, allure-report/**', allowEmptyArchive: true
-                    allure commandline: 'Allure', 
-                           includeProperties: false, 
+                    allure includeProperties: false, 
                            jdk: '', 
-                           results: [[path: 'allure-report']]
+                           results: [[path: 'Jefit_test/bin/Debug/net8.0/allure-results']]
                 } else {
-                    echo "Warning: TestResults directory not found!"
+                    echo "Warning: Allure results directory not found at ${allureResultsDir}!"
                 }
             }
         }
