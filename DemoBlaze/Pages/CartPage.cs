@@ -10,7 +10,6 @@ namespace DemoBlaze.Pages;
 public class CartPage : BasePage
 {
     private readonly By _cartPageLabel = By.XPath("//h2[text()='Products']");
-    //private readonly By _totalPriceLabel = By.Id("totalp");
     private readonly By _cartTable = By.Id("tbodyid");
     private readonly By _cartTableRows = By.TagName("tr");
     private readonly By _cartTableCells = By.TagName("td");
