@@ -80,7 +80,6 @@ pipeline {
                     allure generate "${testResultsDir}" --output "${WORKSPACE}/allure-report" --clean
                     """
                     archiveArtifacts artifacts: 'TestResults/*.trx, allure-report/**', allowEmptyArchive: true
-                    # Указываем явное имя Allure (должно совпадать с Global Tools)
                     allure commandline: 'Allure', 
                            includeProperties: false, 
                            jdk: '', 
